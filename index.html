@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>日麻三人 算点助手</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <header class="app-header">
+    <div class="header-left">
+      <span id="round-label">東1局</span>
+      <span id="honba-label">0本場</span>
+    </div>
+    <h1>🀄 三人麻将</h1>
+    <div class="header-right">
+      供託<span id="kyotaku-label">0</span>本
+    </div>
+  </header>
+
+  <section id="scoreboard">
+    <div class="player-card dealer" id="player-0">
+      <div class="player-role" id="role-0">東</div>
+      <div class="player-name" id="name-0" contenteditable="true" spellcheck="false">Player 1</div>
+      <div class="player-score" id="score-0">35000</div>
+      <div class="player-delta" id="delta-0"></div>
+    </div>
+    <div class="player-card" id="player-1">
+      <div class="player-role" id="role-1">南</div>
+      <div class="player-name" id="name-1" contenteditable="true" spellcheck="false">Player 2</div>
+      <div class="player-score" id="score-1">35000</div>
+      <div class="player-delta" id="delta-1"></div>
+    </div>
+    <div class="player-card" id="player-2">
+      <div class="player-role" id="role-2">西</div>
+      <div class="player-name" id="name-2" contenteditable="true" spellcheck="false">Player 3</div>
+      <div class="player-score" id="score-2">35000</div>
+      <div class="player-delta" id="delta-2"></div>
+    </div>
+  </section>
+
+  <div id="action-bar">
+    <button class="action-btn" id="btn-win">和牌</button>
+    <button class="action-btn" id="btn-riichi">立直</button>
+    <button class="action-btn" id="btn-draw">流局</button>
+    <button class="action-btn setting-btn" id="btn-settings">⚙</button>
+  </div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="hidden"></div>
+
+  <!-- Win Panel -->
+  <div id="win-panel" class="panel hidden">
+    <div class="panel-title">和牌 入力</div>
+
+    <div class="form-row">
+      <label>和牌者</label>
+      <div class="btn-group" id="winner-group"></div>
+    </div>
+
+    <div class="form-row">
+      <label>和牌方式</label>
+      <div class="btn-group">
+        <button class="sel-btn active" id="wt-ron">荣和</button>
+        <button class="sel-btn" id="wt-tsumo">自摸</button>
+      </div>
+    </div>
+
+    <div class="form-row" id="payer-row">
+      <label>放铳者</label>
+      <div class="btn-group" id="payer-group"></div>
+    </div>
+
+    <div class="form-row">
+      <label>手牌</label>
+      <div class="btn-group">
+        <button class="sel-btn active" id="mode-closed">门前</button>
+        <button class="sel-btn" id="mode-open">副露</button>
+      </div>
+    </div>
+
+    <div id="yaku-section">
+      <div class="section-label">役型 <span id="han-total-badge" class="badge">0翻</span></div>
+      <div id="yaku-list"></div>
+    </div>
+
+    <div class="form-row">
+      <label>ドラ</label>
+      <div class="number-input">
+        <button class="num-btn" id="dora-minus">−</button>
+        <span id="dora-val">0</span>
+        <button class="num-btn" id="dora-plus">＋</button>
+      </div>
+      <label style="margin-left:12px">裏ドラ</label>
+      <div class="number-input">
+        <button class="num-btn" id="ura-minus">−</button>
+        <span id="ura-val">0</span>
+        <button class="num-btn" id="ura-plus">＋</button>
+      </div>
+    </div>
+
+    <div class="form-row" id="fu-row">
+      <label>符数</label>
+      <select id="fu-select">
+        <option value="20">20符</option>
+        <option value="25">25符</option>
+        <option value="30" selected>30符</option>
+        <option value="40">40符</option>
+        <option value="50">50符</option>
+        <option value="60">60符</option>
+        <option value="70">70符</option>
+        <option value="80">80符</option>
+        <option value="90">90符</option>
+        <option value="100">100符</option>
+        <option value="110">110符</option>
+      </select>
+    </div>
+
+    <div id="payment-preview"></div>
+
+    <div class="panel-actions">
+      <button class="cancel-btn" id="win-cancel">取消</button>
+      <button class="confirm-btn" id="win-confirm">確認</button>
+    </div>
+  </div>
+
+  <!-- Riichi Panel -->
+  <div id="riichi-panel" class="panel hidden">
+    <div class="panel-title">立直</div>
+    <div class="form-row">
+      <label>立直者</label>
+      <div class="btn-group" id="riichi-group"></div>
+    </div>
+    <div class="panel-actions">
+      <button class="cancel-btn" id="riichi-cancel">取消</button>
+      <button class="confirm-btn" id="riichi-confirm">確認</button>
+    </div>
+  </div>
+
+  <!-- Draw Panel -->
+  <div id="draw-panel" class="panel hidden">
+    <div class="panel-title">流局</div>
+    <div class="form-row" style="flex-direction:column;gap:8px">
+      <label>聴牌者 (複数選択可)</label>
+      <div class="btn-group" id="tenpai-group"></div>
+      <div class="btn-group" style="margin-top:4px">
+        <button class="sel-btn" id="draw-all-noten">全員ノーテン</button>
+        <button class="sel-btn" id="draw-all-tenpai">全員聴牌</button>
+      </div>
+    </div>
+    <div id="draw-preview" class="preview-box"></div>
+    <div class="panel-actions">
+      <button class="cancel-btn" id="draw-cancel">取消</button>
+      <button class="confirm-btn" id="draw-confirm">確認</button>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div id="settings-panel" class="panel hidden">
+    <div class="panel-title">設定</div>
+    <div class="form-row">
+      <label>開始点数</label>
+      <select id="start-score-sel">
+        <option value="35000" selected>35000</option>
+        <option value="30000">30000</option>
+        <option value="25000">25000</option>
+      </select>
+    </div>
+    <div class="panel-actions">
+      <button class="cancel-btn" id="settings-cancel">閉じる</button>
+      <button class="confirm-btn danger-btn" id="btn-reset">ゲームリセット</button>
+    </div>
+  </div>
+
+  <!-- Game Log -->
+  <section id="game-log">
+    <div class="log-header">対局記録</div>
+    <div id="log-entries"><div class="log-empty">まだ記録がありません</div></div>
+  </section>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
