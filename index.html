@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,31 +11,31 @@
 
   <header class="app-header">
     <div class="header-left">
-      <span id="round-label">東1局</span>
-      <span id="honba-label">0本場</span>
+      <span id="round-label">东1局</span>
+      <span id="honba-label">0本场</span>
     </div>
-    <h1>🀄 三人麻将</h1>
+    <h1>🀄 三人日麻</h1>
     <div class="header-right">
-      供託<span id="kyotaku-label">0</span>本
+      供托<span id="kyotaku-label">0</span>本
     </div>
   </header>
 
   <section id="scoreboard">
     <div class="player-card dealer" id="player-0">
-      <div class="player-role" id="role-0">東</div>
-      <div class="player-name" id="name-0" contenteditable="true" spellcheck="false">Player 1</div>
+      <div class="player-role" id="role-0">东</div>
+      <div class="player-name" id="name-0" contenteditable="true" spellcheck="false">玩家1</div>
       <div class="player-score" id="score-0">35000</div>
       <div class="player-delta" id="delta-0"></div>
     </div>
     <div class="player-card" id="player-1">
       <div class="player-role" id="role-1">南</div>
-      <div class="player-name" id="name-1" contenteditable="true" spellcheck="false">Player 2</div>
+      <div class="player-name" id="name-1" contenteditable="true" spellcheck="false">玩家2</div>
       <div class="player-score" id="score-1">35000</div>
       <div class="player-delta" id="delta-1"></div>
     </div>
     <div class="player-card" id="player-2">
       <div class="player-role" id="role-2">西</div>
-      <div class="player-name" id="name-2" contenteditable="true" spellcheck="false">Player 3</div>
+      <div class="player-name" id="name-2" contenteditable="true" spellcheck="false">玩家3</div>
       <div class="player-score" id="score-2">35000</div>
       <div class="player-delta" id="delta-2"></div>
     </div>
@@ -48,12 +48,11 @@
     <button class="action-btn setting-btn" id="btn-settings">⚙</button>
   </div>
 
-  <!-- Overlay -->
   <div id="overlay" class="hidden"></div>
 
-  <!-- Win Panel -->
+  <!-- 和牌面板 -->
   <div id="win-panel" class="panel hidden">
-    <div class="panel-title">和牌 入力</div>
+    <div class="panel-title">和牌录入</div>
 
     <div class="form-row">
       <label>和牌者</label>
@@ -63,70 +62,112 @@
     <div class="form-row">
       <label>和牌方式</label>
       <div class="btn-group">
-        <button class="sel-btn active" id="wt-ron">荣和</button>
-        <button class="sel-btn" id="wt-tsumo">自摸</button>
+        <button type="button" class="sel-btn active" id="wt-ron">荣和</button>
+        <button type="button" class="sel-btn" id="wt-tsumo">自摸</button>
       </div>
     </div>
 
     <div class="form-row" id="payer-row">
-      <label>放铳者</label>
+      <label>点炮者</label>
       <div class="btn-group" id="payer-group"></div>
     </div>
 
     <div class="form-row">
-      <label>手牌</label>
+      <label>手型</label>
       <div class="btn-group">
-        <button class="sel-btn active" id="mode-closed">门前</button>
-        <button class="sel-btn" id="mode-open">副露</button>
+        <button type="button" class="sel-btn active" id="mode-closed">门清</button>
+        <button type="button" class="sel-btn" id="mode-open">副露</button>
       </div>
     </div>
 
+    <!-- 役种 -->
     <div id="yaku-section">
-      <div class="section-label">役型 <span id="han-total-badge" class="badge">0翻</span></div>
+      <div class="section-label">
+        役种
+        <span id="han-total-badge" class="badge zero">0翻</span>
+      </div>
       <div id="yaku-list"></div>
     </div>
 
+    <!-- 宝牌 -->
     <div class="form-row">
-      <label>ドラ</label>
+      <label>宝牌</label>
       <div class="number-input">
-        <button class="num-btn" id="dora-minus">−</button>
+        <button type="button" class="num-btn" id="dora-minus">−</button>
         <span id="dora-val">0</span>
-        <button class="num-btn" id="dora-plus">＋</button>
+        <button type="button" class="num-btn" id="dora-plus">＋</button>
       </div>
-      <label style="margin-left:12px">裏ドラ</label>
+      <label style="margin-left:10px">里宝牌</label>
       <div class="number-input">
-        <button class="num-btn" id="ura-minus">−</button>
+        <button type="button" class="num-btn" id="ura-minus">−</button>
         <span id="ura-val">0</span>
-        <button class="num-btn" id="ura-plus">＋</button>
+        <button type="button" class="num-btn" id="ura-plus">＋</button>
       </div>
     </div>
 
-    <div class="form-row" id="fu-row">
-      <label>符数</label>
-      <select id="fu-select">
-        <option value="20">20符</option>
-        <option value="25">25符</option>
-        <option value="30" selected>30符</option>
-        <option value="40">40符</option>
-        <option value="50">50符</option>
-        <option value="60">60符</option>
-        <option value="70">70符</option>
-        <option value="80">80符</option>
-        <option value="90">90符</option>
-        <option value="100">100符</option>
-        <option value="110">110符</option>
-      </select>
+    <!-- 符数区域 -->
+    <div id="fu-section">
+      <div class="form-row">
+        <label>符数</label>
+        <div class="btn-group">
+          <button type="button" class="sel-btn active" id="fu-mode-manual">手动</button>
+          <button type="button" class="sel-btn" id="fu-mode-calc">详细算</button>
+        </div>
+        <span id="fu-computed-val" class="fu-computed">30符</span>
+      </div>
+
+      <!-- 手动选择 -->
+      <div id="fu-manual-row" class="form-row" style="padding-left:4px">
+        <label style="min-width:0;width:52px"></label>
+        <select id="fu-select">
+          <option value="20">20符</option>
+          <option value="25">25符</option>
+          <option value="30" selected>30符</option>
+          <option value="40">40符</option>
+          <option value="50">50符</option>
+          <option value="60">60符</option>
+          <option value="70">70符</option>
+          <option value="80">80符</option>
+          <option value="90">90符</option>
+          <option value="100">100符</option>
+          <option value="110">110符</option>
+        </select>
+      </div>
+
+      <!-- 详细计算 -->
+      <div id="fu-calc-section" class="hidden">
+        <div class="fu-subsec-title">面子 <span id="fu-meld-count" class="fu-meld-count">0/4组</span></div>
+        <div id="fu-meld-grid"><!-- JS生成 --></div>
+
+        <div class="fu-subsec-title">雀头</div>
+        <div class="btn-group" id="fu-pair-group" style="padding-left:0;margin-bottom:10px">
+          <button type="button" class="sel-btn active" data-pair="normal">普通/幺九 0符</button>
+          <button type="button" class="sel-btn" data-pair="honor">役牌(三元/风) 2符</button>
+        </div>
+
+        <div class="fu-subsec-title">等待形式</div>
+        <div class="btn-group" id="fu-wait-group" style="flex-wrap:wrap;margin-bottom:10px">
+          <button type="button" class="sel-btn active" data-wait="lm">两面 0符</button>
+          <button type="button" class="sel-btn" data-wait="qz">嵌张 2符</button>
+          <button type="button" class="sel-btn" data-wait="bz">边张 2符</button>
+          <button type="button" class="sel-btn" data-wait="sp">双碰 0符</button>
+          <button type="button" class="sel-btn" data-wait="dj">单骑 2符</button>
+        </div>
+
+        <div id="fu-calc-result" class="fu-result"></div>
+      </div>
     </div>
 
+    <!-- 支付预览 -->
     <div id="payment-preview"></div>
 
     <div class="panel-actions">
-      <button class="cancel-btn" id="win-cancel">取消</button>
-      <button class="confirm-btn" id="win-confirm">確認</button>
+      <button type="button" class="cancel-btn" id="win-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="win-confirm">确认</button>
     </div>
   </div>
 
-  <!-- Riichi Panel -->
+  <!-- 立直面板 -->
   <div id="riichi-panel" class="panel hidden">
     <div class="panel-title">立直</div>
     <div class="form-row">
@@ -134,34 +175,34 @@
       <div class="btn-group" id="riichi-group"></div>
     </div>
     <div class="panel-actions">
-      <button class="cancel-btn" id="riichi-cancel">取消</button>
-      <button class="confirm-btn" id="riichi-confirm">確認</button>
+      <button type="button" class="cancel-btn" id="riichi-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="riichi-confirm">确认（−1000）</button>
     </div>
   </div>
 
-  <!-- Draw Panel -->
+  <!-- 流局面板 -->
   <div id="draw-panel" class="panel hidden">
     <div class="panel-title">流局</div>
     <div class="form-row" style="flex-direction:column;gap:8px">
-      <label>聴牌者 (複数選択可)</label>
+      <label>听牌方（可多选）</label>
       <div class="btn-group" id="tenpai-group"></div>
-      <div class="btn-group" style="margin-top:4px">
-        <button class="sel-btn" id="draw-all-noten">全員ノーテン</button>
-        <button class="sel-btn" id="draw-all-tenpai">全員聴牌</button>
+      <div class="btn-group">
+        <button type="button" class="sel-btn" id="draw-all-noten">全员无听</button>
+        <button type="button" class="sel-btn" id="draw-all-tenpai">全员听牌</button>
       </div>
     </div>
     <div id="draw-preview" class="preview-box"></div>
     <div class="panel-actions">
-      <button class="cancel-btn" id="draw-cancel">取消</button>
-      <button class="confirm-btn" id="draw-confirm">確認</button>
+      <button type="button" class="cancel-btn" id="draw-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="draw-confirm">确认</button>
     </div>
   </div>
 
-  <!-- Settings Panel -->
+  <!-- 设置面板 -->
   <div id="settings-panel" class="panel hidden">
-    <div class="panel-title">設定</div>
+    <div class="panel-title">设置</div>
     <div class="form-row">
-      <label>開始点数</label>
+      <label>起始点数</label>
       <select id="start-score-sel">
         <option value="35000" selected>35000</option>
         <option value="30000">30000</option>
@@ -169,15 +210,15 @@
       </select>
     </div>
     <div class="panel-actions">
-      <button class="cancel-btn" id="settings-cancel">閉じる</button>
-      <button class="confirm-btn danger-btn" id="btn-reset">ゲームリセット</button>
+      <button type="button" class="cancel-btn" id="settings-cancel">关闭</button>
+      <button type="button" class="confirm-btn danger-btn" id="btn-reset">重置游戏</button>
     </div>
   </div>
 
-  <!-- Game Log -->
+  <!-- 对局记录 -->
   <section id="game-log">
-    <div class="log-header">対局記録</div>
-    <div id="log-entries"><div class="log-empty">まだ記録がありません</div></div>
+    <div class="log-header">对局记录</div>
+    <div id="log-entries"><div class="log-empty">暂无记录</div></div>
   </section>
 
 </div>
