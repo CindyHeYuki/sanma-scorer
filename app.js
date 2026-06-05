@@ -1,88 +1,89 @@
 'use strict';
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 褰圭琛?// closed_han: 闂ㄦ竻鏃剁炕鏁? open_han: 鍓湶鏃剁炕鏁?(null=闂ㄦ竻闄愬畾)
-// fu_fixed: 鍥哄畾绗︽暟  tsumo_only: 鑷懜闄愬畾
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 役种表
+// closed_han: 门清时翻数  open_han: 副露时翻数 (null=门清限定)
+// fu_fixed: 固定符数  tsumo_only: 自摸限定
+// ─────────────────────────────────────────
 const YAKU = [
-  { id: 'riichi',        name: '绔嬬洿',         closed_han: 1,  open_han: null },
-  { id: 'double_riichi', name: '鍙岀珛鐩?,       closed_han: 2,  open_han: null },
-  { id: 'ippatsu',       name: '涓€鍙?,         closed_han: 1,  open_han: null },
-  { id: 'tsumo',         name: '闂ㄦ竻鑷懜',     closed_han: 1,  open_han: null, tsumo_only: true },
-  { id: 'pinfu',         name: '骞冲拰',         closed_han: 1,  open_han: null },
-  { id: 'iipeiko',       name: '涓€鏉彛',       closed_han: 1,  open_han: null },
-  { id: 'ryanpeiko',     name: '浜屾澂鍙?,       closed_han: 3,  open_han: null },
-  { id: 'tanyao',        name: '鏂购涔?,       closed_han: 1,  open_han: 1 },
-  { id: 'haku',          name: '鐧斤紙褰圭墝锛?,   closed_han: 1,  open_han: 1 },
-  { id: 'hatsu',         name: '鍙戯紙褰圭墝锛?,   closed_han: 1,  open_han: 1 },
-  { id: 'chun',          name: '涓紙褰圭墝锛?,   closed_han: 1,  open_han: 1 },
-  { id: 'seat_wind',     name: '闂ㄩ锛堝焦鐗岋級', closed_han: 1,  open_han: 1 },
-  { id: 'round_wind',    name: '鍦洪锛堝焦鐗岋級', closed_han: 1,  open_han: 1 },
-  { id: 'chiitoi',       name: '涓冨瀛?,       closed_han: 2,  open_han: null, fu_fixed: 25 },
-  { id: 'toitoi',        name: '瀵瑰鍜?,       closed_han: 2,  open_han: 2 },
-  { id: 'sanankou',      name: '涓夋殫鍒?,       closed_han: 2,  open_han: 2 },
-  { id: 'sanshoku',      name: '涓夎壊鍚岄『',     closed_han: 2,  open_han: 1 },
-  { id: 'ittsu',         name: '涓€姘旇疮閫?,     closed_han: 2,  open_han: 1 },
-  { id: 'chanta',        name: '娣峰叏甯﹀购涔?,   closed_han: 2,  open_han: 1 },
-  { id: 'sankantsu',     name: '涓夋潬瀛?,       closed_han: 2,  open_han: 2 },
-  { id: 'shousangen',    name: '灏忎笁鍏?,       closed_han: 2,  open_han: 2 },
-  { id: 'honitsu',       name: '娣蜂竴鑹?,       closed_han: 3,  open_han: 2 },
-  { id: 'junchan',       name: '绾叏甯﹀购涔?,   closed_han: 3,  open_han: 2 },
-  { id: 'chinitsu',      name: '娓呬竴鑹?,       closed_han: 6,  open_han: 5 },
-  { id: 'rinshan',       name: '宀笂寮€鑺?,     closed_han: 1,  open_han: 1 },
-  { id: 'chankan',       name: '鎶㈡潬',         closed_han: 1,  open_han: 1 },
-  { id: 'haitei',        name: '娴峰簳鎹炴湀',     closed_han: 1,  open_han: 1 },
-  { id: 'houtei',        name: '娌冲簳鎹為奔',     closed_han: 1,  open_han: 1 },
-  { id: 'nukidora',      name: '鎷斿寳锛堜笁楹伙級', closed_han: 1,  open_han: 1 },
-  // 褰规弧
-  { id: 'kokushi',       name: '鍥藉＋鏃犲弻',     closed_han: 13, open_han: null },
-  { id: 'suuankou',      name: '鍥涙殫鍒?,       closed_han: 13, open_han: null },
-  { id: 'daisangen',     name: '澶т笁鍏?,       closed_han: 13, open_han: 13 },
-  { id: 'shousuushii',   name: '灏忓洓鍠?,       closed_han: 13, open_han: 13 },
-  { id: 'daisuushii',    name: '澶у洓鍠?,       closed_han: 26, open_han: 26 },
-  { id: 'tsuuiisou',     name: '瀛椾竴鑹?,       closed_han: 13, open_han: 13 },
-  { id: 'ryuuiisou',     name: '缁夸竴鑹?,       closed_han: 13, open_han: 13 },
-  { id: 'chinroutou',    name: '娓呰€佸ご',       closed_han: 13, open_han: 13 },
-  { id: 'chuuren',       name: '涔濊幉瀹濈伅',     closed_han: 13, open_han: null },
-  { id: 'suukantsu',     name: '鍥涙潬瀛?,       closed_han: 13, open_han: 13 },
+  { id: 'riichi',        name: '立直',         closed_han: 1,  open_han: null },
+  { id: 'double_riichi', name: '双立直',       closed_han: 2,  open_han: null },
+  { id: 'ippatsu',       name: '一发',         closed_han: 1,  open_han: null },
+  { id: 'tsumo',         name: '门清自摸',     closed_han: 1,  open_han: null, tsumo_only: true },
+  { id: 'pinfu',         name: '平和',         closed_han: 1,  open_han: null },
+  { id: 'iipeiko',       name: '一杯口',       closed_han: 1,  open_han: null },
+  { id: 'ryanpeiko',     name: '二杯口',       closed_han: 3,  open_han: null },
+  { id: 'tanyao',        name: '断幺九',       closed_han: 1,  open_han: 1 },
+  { id: 'haku',          name: '白（役牌）',   closed_han: 1,  open_han: 1 },
+  { id: 'hatsu',         name: '发（役牌）',   closed_han: 1,  open_han: 1 },
+  { id: 'chun',          name: '中（役牌）',   closed_han: 1,  open_han: 1 },
+  { id: 'seat_wind',     name: '门风（役牌）', closed_han: 1,  open_han: 1 },
+  { id: 'round_wind',    name: '场风（役牌）', closed_han: 1,  open_han: 1 },
+  { id: 'chiitoi',       name: '七对子',       closed_han: 2,  open_han: null, fu_fixed: 25 },
+  { id: 'toitoi',        name: '对对和',       closed_han: 2,  open_han: 2 },
+  { id: 'sanankou',      name: '三暗刻',       closed_han: 2,  open_han: 2 },
+  { id: 'sanshoku',      name: '三色同顺',     closed_han: 2,  open_han: 1 },
+  { id: 'ittsu',         name: '一气贯通',     closed_han: 2,  open_han: 1 },
+  { id: 'chanta',        name: '混全带幺九',   closed_han: 2,  open_han: 1 },
+  { id: 'sankantsu',     name: '三杠子',       closed_han: 2,  open_han: 2 },
+  { id: 'shousangen',    name: '小三元',       closed_han: 2,  open_han: 2 },
+  { id: 'honitsu',       name: '混一色',       closed_han: 3,  open_han: 2 },
+  { id: 'junchan',       name: '纯全带幺九',   closed_han: 3,  open_han: 2 },
+  { id: 'chinitsu',      name: '清一色',       closed_han: 6,  open_han: 5 },
+  { id: 'rinshan',       name: '岭上开花',     closed_han: 1,  open_han: 1 },
+  { id: 'chankan',       name: '抢杠',         closed_han: 1,  open_han: 1 },
+  { id: 'haitei',        name: '海底捞月',     closed_han: 1,  open_han: 1 },
+  { id: 'houtei',        name: '河底捞鱼',     closed_han: 1,  open_han: 1 },
+  { id: 'nukidora',      name: '拔北（三麻）', closed_han: 1,  open_han: 1 },
+  // 役满
+  { id: 'kokushi',       name: '国士无双',     closed_han: 13, open_han: null },
+  { id: 'suuankou',      name: '四暗刻',       closed_han: 13, open_han: null },
+  { id: 'daisangen',     name: '大三元',       closed_han: 13, open_han: 13 },
+  { id: 'shousuushii',   name: '小四喜',       closed_han: 13, open_han: 13 },
+  { id: 'daisuushii',    name: '大四喜',       closed_han: 26, open_han: 26 },
+  { id: 'tsuuiisou',     name: '字一色',       closed_han: 13, open_han: 13 },
+  { id: 'ryuuiisou',     name: '绿一色',       closed_han: 13, open_han: 13 },
+  { id: 'chinroutou',    name: '清老头',       closed_han: 13, open_han: 13 },
+  { id: 'chuuren',       name: '九莲宝灯',     closed_han: 13, open_han: null },
+  { id: 'suukantsu',     name: '四杠子',       closed_han: 13, open_han: 13 },
 ];
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 绗︽暟璁＄畻 鈥?闈㈠瓙瀹氫箟
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 符数计算 — 面子定义
+// ─────────────────────────────────────────
 const MELD_DEFS = [
-  { key: 'seqs',   label: '椤哄瓙',           fuPer: 0  },
-  { key: 'sCTri',  label: '涓紶鏆楀埢 (2-8)', fuPer: 4  },
-  { key: 'sOTri',  label: '涓紶鏄庡埢 (2-8)', fuPer: 2  },
-  { key: 'tCTri',  label: '骞轰節鏆楀埢',       fuPer: 8  },
-  { key: 'tOTri',  label: '骞轰節鏄庡埢',       fuPer: 4  },
-  { key: 'sCKan',  label: '涓紶鏆楁潬',       fuPer: 16 },
-  { key: 'sOKan',  label: '涓紶鏄庢潬',       fuPer: 8  },
-  { key: 'tCKan',  label: '骞轰節鏆楁潬',       fuPer: 32 },
-  { key: 'tOKan',  label: '骞轰節鏄庢潬',       fuPer: 16 },
+  { key: 'seqs',   label: '顺子',           fuPer: 0  },
+  { key: 'sCTri',  label: '中张暗刻 (2-8)', fuPer: 4  },
+  { key: 'sOTri',  label: '中张明刻 (2-8)', fuPer: 2  },
+  { key: 'tCTri',  label: '幺九暗刻',       fuPer: 8  },
+  { key: 'tOTri',  label: '幺九明刻',       fuPer: 4  },
+  { key: 'sCKan',  label: '中张暗杠',       fuPer: 16 },
+  { key: 'sOKan',  label: '中张明杠',       fuPer: 8  },
+  { key: 'tCKan',  label: '幺九暗杠',       fuPer: 32 },
+  { key: 'tOKan',  label: '幺九明杠',       fuPer: 16 },
 ];
 
-// 绛夊緟鏂瑰紡 鈫?绗︽暟
+// 等待方式 → 符数
 const WAIT_FU = { lm: 0, qz: 2, bz: 2, sp: 0, dj: 2 };
-const WAIT_LABEL = { lm: '涓ら潰', qz: '宓屽紶', bz: '杈瑰紶', sp: '鍙岀', dj: '鍗曢獞' };
+const WAIT_LABEL = { lm: '两面', qz: '嵌张', bz: '边张', sp: '双碰', dj: '单骑' };
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 鐐规暟璁＄畻
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 点数计算
+// ─────────────────────────────────────────
 function roundUp100(n) { return Math.ceil(n / 100) * 100; }
 
 function getPointEntry(han, fu) {
-  if (han >= 26) return { label: '鍙屽焦婊?, dealer_ron: 96000, dealer_tsumo_each: 32000, kohai_ron: 64000, kohai_tsumo_dealer: 32000, kohai_tsumo_kohai: 16000 };
-  if (han >= 13) return { label: '褰规弧',   dealer_ron: 48000, dealer_tsumo_each: 16000, kohai_ron: 32000, kohai_tsumo_dealer: 16000, kohai_tsumo_kohai: 8000 };
-  if (han >= 11) return { label: '涓夊€嶆弧', dealer_ron: 36000, dealer_tsumo_each: 12000, kohai_ron: 24000, kohai_tsumo_dealer: 12000, kohai_tsumo_kohai: 6000 };
-  if (han >= 8)  return { label: '鍊嶆弧',   dealer_ron: 24000, dealer_tsumo_each: 8000,  kohai_ron: 16000, kohai_tsumo_dealer: 8000,  kohai_tsumo_kohai: 4000 };
-  if (han >= 6)  return { label: '璺虫弧',   dealer_ron: 18000, dealer_tsumo_each: 6000,  kohai_ron: 12000, kohai_tsumo_dealer: 6000,  kohai_tsumo_kohai: 3000 };
+  if (han >= 26) return { label: '双役满', dealer_ron: 96000, dealer_tsumo_each: 32000, kohai_ron: 64000, kohai_tsumo_dealer: 32000, kohai_tsumo_kohai: 16000 };
+  if (han >= 13) return { label: '役满',   dealer_ron: 48000, dealer_tsumo_each: 16000, kohai_ron: 32000, kohai_tsumo_dealer: 16000, kohai_tsumo_kohai: 8000 };
+  if (han >= 11) return { label: '三倍满', dealer_ron: 36000, dealer_tsumo_each: 12000, kohai_ron: 24000, kohai_tsumo_dealer: 12000, kohai_tsumo_kohai: 6000 };
+  if (han >= 8)  return { label: '倍满',   dealer_ron: 24000, dealer_tsumo_each: 8000,  kohai_ron: 16000, kohai_tsumo_dealer: 8000,  kohai_tsumo_kohai: 4000 };
+  if (han >= 6)  return { label: '跳满',   dealer_ron: 18000, dealer_tsumo_each: 6000,  kohai_ron: 12000, kohai_tsumo_dealer: 6000,  kohai_tsumo_kohai: 3000 };
   const basic = fu * Math.pow(2, han + 2);
   if (han >= 5 || basic * 4 >= 8000) {
-    return { label: '婊¤疮', dealer_ron: 12000, dealer_tsumo_each: 4000, kohai_ron: 8000, kohai_tsumo_dealer: 4000, kohai_tsumo_kohai: 2000 };
+    return { label: '满贯', dealer_ron: 12000, dealer_tsumo_each: 4000, kohai_ron: 8000, kohai_tsumo_dealer: 4000, kohai_tsumo_kohai: 2000 };
   }
   return {
-    label: `${han}缈?{fu}绗,
+    label: `${han}翻${fu}符`,
     dealer_ron:          roundUp100(basic * 6),
     dealer_tsumo_each:   roundUp100(basic * 2),
     kohai_ron:           roundUp100(basic * 4),
@@ -91,8 +92,8 @@ function getPointEntry(han, fu) {
   };
 }
 
-// 璁＄畻鏀粯缁撴瀯
-// 杩斿洖 { payments: [{from, to, amount}], winnerGain, label, kyotakuBonus }
+// 计算支付结构
+// 返回 { payments: [{from, to, amount}], winnerGain, label, kyotakuBonus }
 function calcWinPayment({ han, fu, isDealer, winType, winnerIdx, payerIdx, dealerIdx, honba, kyotaku }) {
   if (han <= 0) return null;
   const pt = getPointEntry(han, fu);
@@ -106,7 +107,8 @@ function calcWinPayment({ han, fu, isDealer, winType, winnerIdx, payerIdx, deale
     payments.push({ from: payerIdx, to: winnerIdx, amount });
     winnerGain += amount;
   } else {
-    // 涓変汉楹诲皢鑷懜锛氬彟澶栦袱浜哄悇鑷粯閽?    others.forEach(p => {
+    // 三人麻将自摸：另外两人各自付钱
+    others.forEach(p => {
       const base = isDealer
         ? pt.dealer_tsumo_each
         : (p === dealerIdx ? pt.kohai_tsumo_dealer : pt.kohai_tsumo_kohai);
@@ -119,16 +121,17 @@ function calcWinPayment({ han, fu, isDealer, winType, winnerIdx, payerIdx, deale
   return { payments, winnerGain, label: pt.label, kyotakuBonus: kyotaku * 1000 };
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 娓告垙鐘舵€?// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-const ROUNDS = ['涓?, '鍗?, '瑗?];
-const SEAT_WINDS = ['涓?, '鍗?, '瑗?];
+// ─────────────────────────────────────────
+// 游戏状态
+// ─────────────────────────────────────────
+const ROUNDS = ['东', '南', '西'];
+const SEAT_WINDS = ['东', '南', '西'];
 
 const state = {
   players: [
-    { name: '鐜╁1', score: 35000 },
-    { name: '鐜╁2', score: 35000 },
-    { name: '鐜╁3', score: 35000 },
+    { name: '玩家1', score: 35000 },
+    { name: '玩家2', score: 35000 },
+    { name: '玩家3', score: 35000 },
   ],
   dealer: 0,
   roundWind: 0,
@@ -139,8 +142,9 @@ const state = {
   startScore: 35000,
 };
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// UI 鐘舵€?// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// UI 状态
+// ─────────────────────────────────────────
 const ui = {
   winnerIdx: 0,
   winType: 'ron',
@@ -166,9 +170,9 @@ function makeFuDetail() {
   };
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// DOM 宸ュ叿
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// DOM 工具
+// ─────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const PANELS = ['win-panel', 'riichi-panel', 'draw-panel', 'settings-panel'];
 
@@ -183,9 +187,9 @@ function hidePanels() {
   $('overlay').classList.add('hidden');
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 娓叉煋
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 渲染
+// ─────────────────────────────────────────
 function getRole(playerIdx) {
   return SEAT_WINDS[(playerIdx - state.dealer + 3) % 3];
 }
@@ -209,12 +213,12 @@ function renderScoreboard(deltas) {
 }
 
 function renderHeader() {
-  $('round-label').textContent = `${ROUNDS[state.roundWind]}${state.roundNum}灞€`;
-  $('honba-label').textContent = `${state.honba}鏈満`;
+  $('round-label').textContent = `${ROUNDS[state.roundWind]}${state.roundNum}局`;
+  $('honba-label').textContent = `${state.honba}本场`;
   $('kyotaku-label').textContent = state.kyotaku;
 }
 
-// 鐢熸垚鐜╁閫夋嫨鎸夐挳
+// 生成玩家选择按钮
 function buildPlayerButtons(groupId, selectedIdx, excludeIdx = -1) {
   const g = $(groupId);
   g.innerHTML = '';
@@ -223,7 +227,7 @@ function buildPlayerButtons(groupId, selectedIdx, excludeIdx = -1) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'sel-btn' + (i === selectedIdx ? ' active' : '');
-    btn.textContent = p.name || `鐜╁${i + 1}`;
+    btn.textContent = p.name || `玩家${i + 1}`;
     btn.dataset.value = i;
     g.appendChild(btn);
   });
@@ -234,25 +238,26 @@ function activateOne(groupId, value) {
     b.classList.toggle('active', +b.dataset.value === value));
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 绗︽暟璁＄畻
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 符数计算
+// ─────────────────────────────────────────
 
-// 浠庤缁嗚緭鍏ヨ绠楃鏁?function calcFuFromDetail() {
+// 从详细输入计算符数
+function calcFuFromDetail() {
   if (ui.selectedYaku.has('chiitoi')) return 25;
   if (ui.selectedYaku.has('pinfu'))   return ui.winType === 'tsumo' ? 20 : 30;
 
   const fd = ui.fuDetail;
   const meldFu = MELD_DEFS.reduce((s, d) => s + fd[d.key] * d.fuPer, 0);
 
-  // 鍜岀墝绗︼細闂ㄦ竻鑽ｅ拰+10锛岃嚜鎽?2锛堝钩鍜岃嚜鎽镐负20鍥哄畾锛屼絾涓婇潰宸插鐞嗭級
+  // 和牌符：门清荣和+10，自摸+2（平和自摸为20固定，但上面已处理）
   const winFu = ui.winType === 'tsumo' ? 2 : (!ui.isOpen ? 10 : 0);
 
   const raw = 20 + meldFu + fd.pairFu + fd.waitFu + winFu;
   return Math.max(Math.ceil(raw / 10) * 10, 20);
 }
 
-// 褰撳墠缈绘暟/绗︽暟
+// 当前翻数/符数
 function calcCurrentHanFu() {
   let han = ui.dora + ui.ura;
   let fuFixed = null;
@@ -265,7 +270,7 @@ function calcCurrentHanFu() {
     if (y.fu_fixed) fuFixed = y.fu_fixed;
   });
 
-  // 骞冲拰閿佸畾
+  // 平和锁定
   if (ui.selectedYaku.has('pinfu')) {
     fuFixed = ui.winType === 'tsumo' ? 20 : 30;
   }
@@ -276,7 +281,7 @@ function calcCurrentHanFu() {
   return { han, fu, fuFixed };
 }
 
-// 鐢熸垚闈㈠瓙璁℃暟鍣ㄨ
+// 生成面子计数器行
 function buildFuMeldGrid() {
   const grid = $('fu-meld-grid');
   grid.innerHTML = '';
@@ -285,80 +290,81 @@ function buildFuMeldGrid() {
     row.className = 'fu-meld-row';
     row.innerHTML = `
       <span class="fu-meld-name">${def.label}</span>
-      <span class="fu-per">${def.fuPer}绗?/span>
+      <span class="fu-per">${def.fuPer}符</span>
       <div class="fc-counter">
-        <button type="button" class="fc-btn fc-minus" data-key="${def.key}">鈭?/button>
+        <button type="button" class="fc-btn fc-minus" data-key="${def.key}">−</button>
         <span class="fc-val" id="fc-${def.key}">0</span>
-        <button type="button" class="fc-btn fc-plus" data-key="${def.key}">锛?/button>
+        <button type="button" class="fc-btn fc-plus" data-key="${def.key}">＋</button>
       </div>`;
     grid.appendChild(row);
   });
 }
 
-// 鍒锋柊闈㈠瓙璁℃暟鏄剧ず & 鎬荤粍鏁?function updateMeldCountDisplay() {
+// 刷新面子计数显示 & 总组数
+function updateMeldCountDisplay() {
   MELD_DEFS.forEach(d => {
     const el = $(`fc-${d.key}`);
     if (el) el.textContent = ui.fuDetail[d.key];
   });
   const total = MELD_DEFS.reduce((s, d) => s + ui.fuDetail[d.key], 0);
   const el = $('fu-meld-count');
-  el.textContent = `${total}/4缁刞;
+  el.textContent = `${total}/4组`;
   el.className = 'fu-meld-count' + (total > 4 ? ' over' : '');
 }
 
-// 鏇存柊绗︽暟璁＄畻缁撴灉灞曠ず
+// 更新符数计算结果展示
 function updateFuCalcResult() {
   const result = $('fu-calc-result');
   if (!result) return;
 
   if (ui.selectedYaku.has('chiitoi')) {
-    result.innerHTML = '<span class="fu-lock">涓冨瀛愬浐瀹?25绗?/span>';
+    result.innerHTML = '<span class="fu-lock">七对子固定 25符</span>';
     return;
   }
   if (ui.selectedYaku.has('pinfu')) {
     const fu = ui.winType === 'tsumo' ? 20 : 30;
-    result.innerHTML = `<span class="fu-lock">骞冲拰鍥哄畾 ${fu}绗?/span>`;
+    result.innerHTML = `<span class="fu-lock">平和固定 ${fu}符</span>`;
     return;
   }
 
   const { han } = calcCurrentHanFu();
   if (han >= 13) {
-    result.innerHTML = '<span class="fu-lock">褰规弧鏃犻渶璁＄畻绗︽暟</span>';
+    result.innerHTML = '<span class="fu-lock">役满无需计算符数</span>';
     return;
   }
   if (han >= 5) {
-    result.innerHTML = '<span class="fu-lock">5缈讳互涓婏紙婊¤疮璧凤級锛岀鏁颁笉褰卞搷鐐规暟</span>';
+    result.innerHTML = '<span class="fu-lock">5翻以上（满贯起），符数不影响点数</span>';
     return;
   }
 
   const fd = ui.fuDetail;
   const meldFu = MELD_DEFS.reduce((s, d) => s + fd[d.key] * d.fuPer, 0);
   const winFu  = ui.winType === 'tsumo' ? 2 : (!ui.isOpen ? 10 : 0);
-  const winDesc = ui.winType === 'tsumo' ? '鑷懜+2' : (!ui.isOpen ? '闂ㄦ竻鑽ｅ拰+10' : '鍓湶鑽ｅ拰+0');
+  const winDesc = ui.winType === 'tsumo' ? '自摸+2' : (!ui.isOpen ? '门清荣和+10' : '副露荣和+0');
   const raw    = 20 + meldFu + fd.pairFu + fd.waitFu + winFu;
   const rounded = Math.max(Math.ceil(raw / 10) * 10, 20);
 
   const total = MELD_DEFS.reduce((s, d) => s + fd[d.key], 0);
   const meldWarn = total > 4
-    ? `<span style="color:var(--red)"> 鈿犺秴鍑?{total}缁?/span>`
+    ? `<span style="color:var(--red)"> ⚠超出${total}组</span>`
     : '';
 
   result.innerHTML = `
-    <div>20搴?+ ${meldFu}闈㈠瓙${meldWarn} + ${fd.pairFu}闆€澶?+ ${fd.waitFu}绛夊緟锛?{WAIT_LABEL[fd.waitType]}锛?+ ${winFu}锛?{winDesc}锛?/div>
-    <div class="fu-total">= 鍘熷 ${raw}绗?鈫?<strong>${rounded}绗?/strong></div>`;
+    <div>20底 + ${meldFu}面子${meldWarn} + ${fd.pairFu}雀头 + ${fd.waitFu}等待（${WAIT_LABEL[fd.waitType]}） + ${winFu}（${winDesc}）</div>
+    <div class="fu-total">= 原始 ${raw}符 → <strong>${rounded}符</strong></div>`;
 }
 
-// 鏇存柊绗︽暟鏄剧ず + 缈绘暟寰芥爣
+// 更新符数显示 + 翻数徽标
 function updateFuDisplay() {
   const { han, fu, fuFixed } = calcCurrentHanFu();
   const isYakuman = han >= 13;
   const isMangan  = han >= 5 || (han > 0 && fu * Math.pow(2, han + 2) * 4 >= 8000);
   const locked = fuFixed !== null || isMangan;
 
-  // 濮嬬粓鏄剧ず褰撳墠绗︽暟
-  $('fu-computed-val').textContent = han <= 0 ? '鈥? : `${fu}绗;
+  // 始终显示当前符数
+  $('fu-computed-val').textContent = han <= 0 ? '—' : `${fu}符`;
 
-  // 鎵嬪姩 vs 璇︾粏
+  // 手动 vs 详细
   const manualRow  = $('fu-manual-row');
   const calcSec    = $('fu-calc-section');
 
@@ -376,10 +382,10 @@ function updateFuDisplay() {
     updateFuCalcResult();
   }
 
-  // 缈绘暟寰芥爣
+  // 翻数徽标
   const badge = $('han-total-badge');
   if (han <= 0) {
-    badge.textContent = '0缈?;
+    badge.textContent = '0翻';
     badge.className = 'badge zero';
   } else {
     badge.textContent = getPointEntry(han, fu).label;
@@ -387,9 +393,9 @@ function updateFuDisplay() {
   }
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 褰圭鍒楄〃
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 役种列表
+// ─────────────────────────────────────────
 function buildYakuList() {
   const list = $('yaku-list');
   list.innerHTML = '';
@@ -398,8 +404,8 @@ function buildYakuList() {
     const available = ui.isOpen ? canOpen : true;
     const matchWin  = y.tsumo_only ? (ui.winType === 'tsumo') : true;
     const hanVal    = (ui.isOpen && canOpen) ? y.open_han : y.closed_han;
-    const hanLabel  = y.closed_han >= 13 ? '褰规弧'
-      : `${hanVal}缈?{y.open_han === null ? '锛堥棬娓咃級' : ''}`;
+    const hanLabel  = y.closed_han >= 13 ? '役满'
+      : `${hanVal}翻${y.open_han === null ? '（门清）' : ''}`;
 
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -414,15 +420,15 @@ function buildYakuList() {
   });
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 鏀粯棰勮
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 支付预览
+// ─────────────────────────────────────────
 function updateWinPreview() {
   const preview = $('payment-preview');
   const { han, fu } = calcCurrentHanFu();
 
   if (han <= 0) {
-    preview.innerHTML = '<div class="preview-error">鏃犲焦锛堜笉鑳藉拰鐗岋級</div>';
+    preview.innerHTML = '<div class="preview-error">无役（不能和牌）</div>';
     return;
   }
 
@@ -437,7 +443,7 @@ function updateWinPreview() {
     kyotaku:   state.kyotaku,
   });
 
-  if (!result) { preview.innerHTML = '<div class="preview-error">璁＄畻鍑洪敊</div>'; return; }
+  if (!result) { preview.innerHTML = '<div class="preview-error">计算出错</div>'; return; }
 
   const pt = getPointEntry(han, fu);
   let html = `<div class="preview-label">${pt.label}</div>`;
@@ -445,20 +451,20 @@ function updateWinPreview() {
   result.payments.forEach(p => {
     const fromName = state.players[p.from].name;
     const toName   = state.players[p.to].name;
-    html += `<div class="preview-row"><span>${fromName} 鈫?${toName}</span><span class="amount">${p.amount.toLocaleString()}</span></div>`;
+    html += `<div class="preview-row"><span>${fromName} → ${toName}</span><span class="amount">${p.amount.toLocaleString()}</span></div>`;
   });
 
   if (state.kyotaku > 0) {
-    html += `<div class="preview-row"><span>鏀朵緵鎵?/span><span class="amount">+${(state.kyotaku * 1000).toLocaleString()}</span></div>`;
+    html += `<div class="preview-row"><span>收供托</span><span class="amount">+${(state.kyotaku * 1000).toLocaleString()}</span></div>`;
   }
   if (state.honba > 0) {
     const bonus = ui.winType === 'ron'
       ? `+${(state.honba * 300).toLocaleString()}`
-      : `+${(state.honba * 100).toLocaleString()} 脳 ${result.payments.length}浜篳;
-    html += `<div class="preview-row"><span>鏈満濂栧姳</span><span class="amount">${bonus}</span></div>`;
+      : `+${(state.honba * 100).toLocaleString()} × ${result.payments.length}人`;
+    html += `<div class="preview-row"><span>本场奖励</span><span class="amount">${bonus}</span></div>`;
   }
 
-  html += `<div class="preview-total"><span>${state.players[ui.winnerIdx].name} 鎬绘敹鍏?/span><span>+${result.winnerGain.toLocaleString()}</span></div>`;
+  html += `<div class="preview-total"><span>${state.players[ui.winnerIdx].name} 总收入</span><span>+${result.winnerGain.toLocaleString()}</span></div>`;
   preview.innerHTML = html;
 }
 
@@ -468,24 +474,24 @@ function renderDrawPreview() {
   const preview = $('draw-preview');
 
   if (tenpai.length === 0 || tenpai.length === 3) {
-    preview.innerHTML = '<div style="color:var(--text-dim)">鏃犵偣鏁拌浆绉?/div>';
+    preview.innerHTML = '<div style="color:var(--text-dim)">无点数转移</div>';
     return;
   }
-  // 3浜猴細鎬?000鐐瑰啀鍒嗛厤
+  // 3人：总3000点再分配
   const notenPay  = Math.round(3000 / noten.length);
   const tenpaiGet = Math.round(3000 / tenpai.length);
 
   let html = '';
-  noten.forEach(n  => { html += `<div class="preview-row"><span>${state.players[n].name}锛堟棤鍚級</span><span class="amount" style="color:var(--red)">鈭?{notenPay.toLocaleString()}</span></div>`; });
-  tenpai.forEach(t => { html += `<div class="preview-row"><span>${state.players[t].name}锛堝惉鐗岋級</span><span class="amount" style="color:var(--green)">+${tenpaiGet.toLocaleString()}</span></div>`; });
+  noten.forEach(n  => { html += `<div class="preview-row"><span>${state.players[n].name}（无听）</span><span class="amount" style="color:var(--red)">−${notenPay.toLocaleString()}</span></div>`; });
+  tenpai.forEach(t => { html += `<div class="preview-row"><span>${state.players[t].name}（听牌）</span><span class="amount" style="color:var(--green)">+${tenpaiGet.toLocaleString()}</span></div>`; });
   preview.innerHTML = html;
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 瀵瑰眬璁板綍
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 对局记录
+// ─────────────────────────────────────────
 function addLog(desc, deltas) {
-  const round = `${ROUNDS[state.roundWind]}${state.roundNum}灞€ ${state.honba}鏈満`;
+  const round = `${ROUNDS[state.roundWind]}${state.roundNum}局 ${state.honba}本场`;
   state.log.unshift({ round, desc, deltas: [...deltas] });
   renderLog();
 }
@@ -493,13 +499,13 @@ function addLog(desc, deltas) {
 function renderLog() {
   const el = $('log-entries');
   if (!state.log.length) {
-    el.innerHTML = '<div class="log-empty">鏆傛棤璁板綍</div>';
+    el.innerHTML = '<div class="log-empty">暂无记录</div>';
     return;
   }
   el.innerHTML = state.log.slice(0, 30).map(e => {
     const dStr = e.deltas.map((d, i) => {
       if (!d) return '';
-      const name = state.players[i]?.name ?? `鐜╁${i+1}`;
+      const name = state.players[i]?.name ?? `玩家${i+1}`;
       return `${name}:${d > 0 ? '+' : ''}${d.toLocaleString()}`;
     }).filter(Boolean).join('  ');
     return `<div class="log-entry">
@@ -510,9 +516,9 @@ function renderLog() {
   }).join('');
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 娓告垙鎿嶄綔
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 游戏操作
+// ─────────────────────────────────────────
 function advanceRound(dealerWon) {
   if (dealerWon) {
     state.honba++;
@@ -534,7 +540,7 @@ function flashDeltas(deltas) {
 
 function applyWin() {
   const { han, fu } = calcCurrentHanFu();
-  if (han <= 0) { alert('璇烽€夋嫨褰圭'); return; }
+  if (han <= 0) { alert('请选择役种'); return; }
 
   const isDealer = ui.winnerIdx === state.dealer;
   const result = calcWinPayment({
@@ -557,10 +563,10 @@ function applyWin() {
   deltas[ui.winnerIdx] += result.winnerGain;
   state.kyotaku = 0;
 
-  const yakuNames = YAKU.filter(y => ui.selectedYaku.has(y.id)).map(y => y.name).join('路');
+  const yakuNames = YAKU.filter(y => ui.selectedYaku.has(y.id)).map(y => y.name).join('·');
   const pt = getPointEntry(han, fu);
-  const typeStr = ui.winType === 'ron' ? '鑽ｅ拰' : '鑷懜';
-  addLog(`${state.players[ui.winnerIdx].name} ${typeStr} ${pt.label}銆?{yakuNames || '褰圭墝绛?} 瀹濈墝${ui.dora}${ui.ura > 0 ? ' 閲屽疂鐗?+ui.ura : ''}銆慲, deltas);
+  const typeStr = ui.winType === 'ron' ? '荣和' : '自摸';
+  addLog(`${state.players[ui.winnerIdx].name} ${typeStr} ${pt.label}【${yakuNames || '役牌等'} 宝牌${ui.dora}${ui.ura > 0 ? ' 里宝牌'+ui.ura : ''}】`, deltas);
 
   advanceRound(isDealer);
   hidePanels();
@@ -570,12 +576,12 @@ function applyWin() {
 
 function applyRiichi() {
   const p = ui.riichiWho;
-  if (state.players[p].score < 1000) { alert('鐐规暟涓嶈冻'); return; }
+  if (state.players[p].score < 1000) { alert('点数不足'); return; }
   const deltas = [0, 0, 0];
   state.players[p].score -= 1000;
   deltas[p] = -1000;
   state.kyotaku++;
-  addLog(`${state.players[p].name} 绔嬬洿`, deltas);
+  addLog(`${state.players[p].name} 立直`, deltas);
   hidePanels();
   renderHeader();
   flashDeltas(deltas);
@@ -594,18 +600,18 @@ function applyDraw() {
   }
 
   const tStr = tenpai.length > 0
-    ? '鍚墝: ' + tenpai.map(i => state.players[i].name).join('路')
-    : '鍏ㄥ憳鏃犲惉';
-  addLog(`娴佸眬 鈥?${tStr}`, deltas);
+    ? '听牌: ' + tenpai.map(i => state.players[i].name).join('·')
+    : '全员无听';
+  addLog(`流局 — ${tStr}`, deltas);
   state.honba++;
   hidePanels();
   renderHeader();
   flashDeltas(deltas);
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 鎵撳紑鍜岀墝闈㈡澘
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 打开和牌面板
+// ─────────────────────────────────────────
 function openWinPanel() {
   ui.winnerIdx   = 0;
   ui.winType     = 'ron';
@@ -642,8 +648,9 @@ function openWinPanel() {
   showPanel('win-panel');
 }
 
-// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-// 鍒濆鍖?鈥?鎵€鏈変簨浠剁洃鍚彧娉ㄥ唽涓€娆?// 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─────────────────────────────────────────
+// 初始化 — 所有事件监听只注册一次
+// ─────────────────────────────────────────
 function init() {
   renderScoreboard();
   renderHeader();
@@ -651,7 +658,7 @@ function init() {
 
   $('overlay').addEventListener('click', hidePanels);
 
-  // 鈹€鈹€ 鎿嶄綔鏍?鈹€鈹€
+  // ── 操作栏 ──
   $('btn-win').addEventListener('click', openWinPanel);
 
   $('btn-riichi').addEventListener('click', () => {
@@ -669,7 +676,7 @@ function init() {
 
   $('btn-settings').addEventListener('click', () => showPanel('settings-panel'));
 
-  // 鈹€鈹€ 鍜岀墝锛氬拰鐗岃€?鈹€鈹€
+  // ── 和牌：和牌者 ──
   $('winner-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-value]');
     if (!btn) return;
@@ -682,7 +689,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 鍜岀墝锛氱偣鐐€?鈹€鈹€
+  // ── 和牌：点炮者 ──
   $('payer-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-value]');
     if (!btn) return;
@@ -691,7 +698,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 鍜岀墝鏂瑰紡 鈹€鈹€
+  // ── 和牌方式 ──
   $('wt-ron').addEventListener('click', () => {
     ui.winType = 'ron';
     $('wt-ron').classList.add('active');
@@ -713,7 +720,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 闂ㄦ竻 / 鍓湶 鈹€鈹€
+  // ── 门清 / 副露 ──
   $('mode-closed').addEventListener('click', () => {
     ui.isOpen = false;
     $('mode-closed').classList.add('active');
@@ -733,7 +740,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 褰圭閫夋嫨锛堝鎵橈級 鈹€鈹€
+  // ── 役种选择（委托） ──
   $('yaku-list').addEventListener('click', e => {
     const btn = e.target.closest('.yaku-btn');
     if (!btn || btn.classList.contains('disabled')) return;
@@ -744,13 +751,13 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 瀹濈墝 鈹€鈹€
+  // ── 宝牌 ──
   $('dora-minus').addEventListener('click', () => { if (ui.dora > 0) { ui.dora--; $('dora-val').textContent = ui.dora; updateFuDisplay(); updateWinPreview(); } });
   $('dora-plus').addEventListener('click',  () => { ui.dora++; $('dora-val').textContent = ui.dora; updateFuDisplay(); updateWinPreview(); });
   $('ura-minus').addEventListener('click',  () => { if (ui.ura > 0) { ui.ura--; $('ura-val').textContent = ui.ura; updateFuDisplay(); updateWinPreview(); } });
   $('ura-plus').addEventListener('click',   () => { ui.ura++; $('ura-val').textContent = ui.ura; updateFuDisplay(); updateWinPreview(); });
 
-  // 鈹€鈹€ 绗︽暟妯″紡 鈹€鈹€
+  // ── 符数模式 ──
   $('fu-mode-manual').addEventListener('click', () => {
     ui.fuMode = 'manual';
     $('fu-mode-manual').classList.add('active');
@@ -767,14 +774,14 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 鎵嬪姩绗︽暟涓嬫媺 鈹€鈹€
+  // ── 手动符数下拉 ──
   $('fu-select').addEventListener('change', () => {
     ui.fu = +$('fu-select').value;
     updateFuDisplay();
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 璇︾粏绗︽暟锛氶潰瀛愯鏁板櫒锛堝鎵橈級鈹€鈹€
+  // ── 详细符数：面子计数器（委托）──
   $('fu-meld-grid').addEventListener('click', e => {
     const btn = e.target.closest('[data-key]');
     if (!btn) return;
@@ -790,7 +797,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 璇︾粏绗︽暟锛氶泙澶?鈹€鈹€
+  // ── 详细符数：雀头 ──
   $('fu-pair-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-pair]');
     if (!btn) return;
@@ -801,7 +808,7 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 璇︾粏绗︽暟锛氱瓑寰?鈹€鈹€
+  // ── 详细符数：等待 ──
   $('fu-wait-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-wait]');
     if (!btn) return;
@@ -814,11 +821,11 @@ function init() {
     updateWinPreview();
   });
 
-  // 鈹€鈹€ 鍜岀墝纭/鍙栨秷 鈹€鈹€
+  // ── 和牌确认/取消 ──
   $('win-cancel').addEventListener('click', hidePanels);
   $('win-confirm').addEventListener('click', applyWin);
 
-  // 鈹€鈹€ 绔嬬洿 鈹€鈹€
+  // ── 立直 ──
   $('riichi-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-value]');
     if (!btn) return;
@@ -828,7 +835,7 @@ function init() {
   $('riichi-cancel').addEventListener('click', hidePanels);
   $('riichi-confirm').addEventListener('click', applyRiichi);
 
-  // 鈹€鈹€ 娴佸眬 鈹€鈹€
+  // ── 流局 ──
   $('tenpai-group').addEventListener('click', e => {
     const btn = e.target.closest('[data-value]');
     if (!btn) return;
@@ -850,10 +857,10 @@ function init() {
   $('draw-cancel').addEventListener('click', hidePanels);
   $('draw-confirm').addEventListener('click', applyDraw);
 
-  // 鈹€鈹€ 璁剧疆 鈹€鈹€
+  // ── 设置 ──
   $('settings-cancel').addEventListener('click', hidePanels);
   $('btn-reset').addEventListener('click', () => {
-    if (!confirm('纭畾閲嶇疆娓告垙锛?)) return;
+    if (!confirm('确定重置游戏？')) return;
     const s = +$('start-score-sel').value;
     state.players.forEach(p => p.score = s);
     Object.assign(state, { dealer: 0, roundWind: 0, roundNum: 1, honba: 0, kyotaku: 0, log: [], startScore: s });
@@ -863,10 +870,10 @@ function init() {
     renderLog();
   });
 
-  // 鈹€鈹€ 鐜╁鍚嶅瓧缂栬緫 鈹€鈹€
+  // ── 玩家名字编辑 ──
   [0, 1, 2].forEach(i => {
     $(`name-${i}`).addEventListener('blur', () => {
-      state.players[i].name = $(`name-${i}`).textContent.trim() || `鐜╁${i + 1}`;
+      state.players[i].name = $(`name-${i}`).textContent.trim() || `玩家${i + 1}`;
     });
     $(`name-${i}`).addEventListener('keydown', e => {
       if (e.key === 'Enter') { e.preventDefault(); $(`name-${i}`).blur(); }
