@@ -394,28 +394,90 @@ function updateFuDisplay() {
 }
 
 // ─────────────────────────────────────────
+// 役种相克检测
+// ─────────────────────────────────────────
+function getIncompatibleYaku() {
+  const sel = ui.selectedYaku;
+  const incompat = new Set();
+
+  // 和牌方式限制
+  if (ui.winType !== 'tsumo') { incompat.add('haitei'); incompat.add('rinshan'); }
+  if (ui.winType !== 'ron')   { incompat.add('houtei'); incompat.add('chankan'); }
+
+  // 特殊和牌四者互斥（海底/岭上/河底/抢杠只能一个）
+  const WIN_SP = ['haitei', 'rinshan', 'houtei', 'chankan'];
+  WIN_SP.forEach(a => {
+    if (sel.has(a)) WIN_SP.filter(b => b !== a).forEach(id => incompat.add(id));
+  });
+
+  // 一発须依附立直
+  if (!sel.has('riichi') && !sel.has('double_riichi')) incompat.add('ippatsu');
+
+  // 立直 ↔ 双立直 互斥
+  if (sel.has('riichi'))        incompat.add('double_riichi');
+  if (sel.has('double_riichi')) incompat.add('riichi');
+
+  // 平和：全顺子+非役牌雀头，不能与要求刻子/役牌对的役共存
+  const PIN = ['haku', 'hatsu', 'chun', 'seat_wind', 'round_wind',
+               'toitoi', 'sanankou', 'chiitoi', 'sankantsu', 'shousangen'];
+  if (sel.has('pinfu'))            PIN.forEach(id => incompat.add(id));
+  if (PIN.some(id => sel.has(id))) incompat.add('pinfu');
+
+  // 七対子：七对结构与四面子结构役相克
+  const CHI = ['toitoi', 'iipeiko', 'ryanpeiko', 'sanankou',
+               'sanshoku', 'ittsu', 'chanta', 'junchan', 'shousangen', 'sankantsu'];
+  if (sel.has('chiitoi'))          CHI.forEach(id => incompat.add(id));
+  if (CHI.some(id => sel.has(id))) incompat.add('chiitoi');
+
+  // 対対和：全刻子与顺子役相克
+  const TOI = ['iipeiko', 'ryanpeiko', 'sanshoku', 'ittsu'];
+  if (sel.has('toitoi'))           TOI.forEach(id => incompat.add(id));
+  if (TOI.some(id => sel.has(id))) incompat.add('toitoi');
+
+  // 混一色 ↔ 清一色 互斥
+  if (sel.has('honitsu'))  incompat.add('chinitsu');
+  if (sel.has('chinitsu')) incompat.add('honitsu');
+
+  // 断幺九：无幺九/字牌，与含幺九/字牌的役相克
+  // 混一色需字牌；混全/纯全/清老头需幺九；一气贯通含1和9
+  const TAN = ['honitsu', 'chanta', 'junchan', 'chinroutou', 'ittsu'];
+  if (sel.has('tanyao'))           TAN.forEach(id => incompat.add(id));
+  if (TAN.some(id => sel.has(id))) incompat.add('tanyao');
+
+  // 混全帯幺九 ↔ 纯全帯幺九 互斥（纯全是混全的严格子集）
+  if (sel.has('chanta'))  incompat.add('junchan');
+  if (sel.has('junchan')) incompat.add('chanta');
+
+  return incompat;
+}
+
+// ─────────────────────────────────────────
 // 役种列表
 // ─────────────────────────────────────────
 function buildYakuList() {
+  const incompat = getIncompatibleYaku();
   const list = $('yaku-list');
   list.innerHTML = '';
   YAKU.forEach(y => {
-    const canOpen  = y.open_han !== null;
+    const canOpen   = y.open_han !== null;
     const available = ui.isOpen ? canOpen : true;
     const matchWin  = y.tsumo_only ? (ui.winType === 'tsumo') : true;
-    const hanVal    = (ui.isOpen && canOpen) ? y.open_han : y.closed_han;
-    const hanLabel  = y.closed_han >= 13 ? '役满'
+    const conflict  = incompat.has(y.id);
+    const disabled  = !available || !matchWin || conflict;
+
+    const hanVal   = (ui.isOpen && canOpen) ? y.open_han : y.closed_han;
+    const hanLabel = y.closed_han >= 13 ? '役满'
       : `${hanVal}翻${y.open_han === null ? '（门清）' : ''}`;
 
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'yaku-btn'
       + (ui.selectedYaku.has(y.id) ? ' active' : '')
-      + ((!available || !matchWin) ? ' disabled' : '');
+      + (disabled ? ' disabled' : '');
     btn.dataset.id = y.id;
     btn.innerHTML = `${y.name}<span class="yaku-han">${hanLabel}</span>`;
 
-    if (!available || !matchWin) ui.selectedYaku.delete(y.id);
+    if (disabled) ui.selectedYaku.delete(y.id);
     list.appendChild(btn);
   });
 }
@@ -745,8 +807,9 @@ function init() {
     const btn = e.target.closest('.yaku-btn');
     if (!btn || btn.classList.contains('disabled')) return;
     const id = btn.dataset.id;
-    if (ui.selectedYaku.has(id)) { ui.selectedYaku.delete(id); btn.classList.remove('active'); }
-    else { ui.selectedYaku.add(id); btn.classList.add('active'); }
+    if (ui.selectedYaku.has(id)) ui.selectedYaku.delete(id);
+    else ui.selectedYaku.add(id);
+    buildYakuList();  // 重建列表以更新相克禁用状态
     updateFuDisplay();
     updateWinPreview();
   });
