@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>鏃ラ夯涓変汉 绠楃偣鍔╂墜</title>
+<title>日麻三人 算点助手</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,198 +11,199 @@
 
   <header class="app-header">
     <div class="header-left">
-      <span id="round-label">涓?灞€</span>
-      <span id="honba-label">0鏈満</span>
+      <span id="round-label">东1局</span>
+      <span id="honba-label">0本场</span>
     </div>
-    <h1>馃€?涓変汉鏃ラ夯</h1>
+    <h1>🀄 三人日麻</h1>
     <div class="header-right">
-      渚涙墭<span id="kyotaku-label">0</span>鏈?    </div>
+      供托<span id="kyotaku-label">0</span>本
+    </div>
   </header>
 
   <section id="scoreboard">
     <div class="player-card dealer" id="player-0">
-      <div class="player-role" id="role-0">涓?/div>
-      <div class="player-name" id="name-0" contenteditable="true" spellcheck="false">鐜╁1</div>
+      <div class="player-role" id="role-0">东</div>
+      <div class="player-name" id="name-0" contenteditable="true" spellcheck="false">玩家1</div>
       <div class="player-score" id="score-0">35000</div>
       <div class="player-delta" id="delta-0"></div>
     </div>
     <div class="player-card" id="player-1">
-      <div class="player-role" id="role-1">鍗?/div>
-      <div class="player-name" id="name-1" contenteditable="true" spellcheck="false">鐜╁2</div>
+      <div class="player-role" id="role-1">南</div>
+      <div class="player-name" id="name-1" contenteditable="true" spellcheck="false">玩家2</div>
       <div class="player-score" id="score-1">35000</div>
       <div class="player-delta" id="delta-1"></div>
     </div>
     <div class="player-card" id="player-2">
-      <div class="player-role" id="role-2">瑗?/div>
-      <div class="player-name" id="name-2" contenteditable="true" spellcheck="false">鐜╁3</div>
+      <div class="player-role" id="role-2">西</div>
+      <div class="player-name" id="name-2" contenteditable="true" spellcheck="false">玩家3</div>
       <div class="player-score" id="score-2">35000</div>
       <div class="player-delta" id="delta-2"></div>
     </div>
   </section>
 
   <div id="action-bar">
-    <button class="action-btn" id="btn-win">鍜岀墝</button>
-    <button class="action-btn" id="btn-riichi">绔嬬洿</button>
-    <button class="action-btn" id="btn-draw">娴佸眬</button>
-    <button class="action-btn setting-btn" id="btn-settings">鈿?/button>
+    <button class="action-btn" id="btn-win">和牌</button>
+    <button class="action-btn" id="btn-riichi">立直</button>
+    <button class="action-btn" id="btn-draw">流局</button>
+    <button class="action-btn setting-btn" id="btn-settings">⚙</button>
   </div>
 
   <div id="overlay" class="hidden"></div>
 
-  <!-- 鍜岀墝闈㈡澘 -->
+  <!-- 和牌面板 -->
   <div id="win-panel" class="panel hidden">
-    <div class="panel-title">鍜岀墝褰曞叆</div>
+    <div class="panel-title">和牌录入</div>
 
     <div class="form-row">
-      <label>鍜岀墝鑰?/label>
+      <label>和牌者</label>
       <div class="btn-group" id="winner-group"></div>
     </div>
 
     <div class="form-row">
-      <label>鍜岀墝鏂瑰紡</label>
+      <label>和牌方式</label>
       <div class="btn-group">
-        <button type="button" class="sel-btn active" id="wt-ron">鑽ｅ拰</button>
-        <button type="button" class="sel-btn" id="wt-tsumo">鑷懜</button>
+        <button type="button" class="sel-btn active" id="wt-ron">荣和</button>
+        <button type="button" class="sel-btn" id="wt-tsumo">自摸</button>
       </div>
     </div>
 
     <div class="form-row" id="payer-row">
-      <label>鐐圭偖鑰?/label>
+      <label>点炮者</label>
       <div class="btn-group" id="payer-group"></div>
     </div>
 
     <div class="form-row">
-      <label>鎵嬪瀷</label>
+      <label>手型</label>
       <div class="btn-group">
-        <button type="button" class="sel-btn active" id="mode-closed">闂ㄦ竻</button>
-        <button type="button" class="sel-btn" id="mode-open">鍓湶</button>
+        <button type="button" class="sel-btn active" id="mode-closed">门清</button>
+        <button type="button" class="sel-btn" id="mode-open">副露</button>
       </div>
     </div>
 
-    <!-- 褰圭 -->
+    <!-- 役种 -->
     <div id="yaku-section">
       <div class="section-label">
-        褰圭
-        <span id="han-total-badge" class="badge zero">0缈?/span>
+        役种
+        <span id="han-total-badge" class="badge zero">0翻</span>
       </div>
       <div id="yaku-list"></div>
     </div>
 
-    <!-- 瀹濈墝 -->
+    <!-- 宝牌 -->
     <div class="form-row">
-      <label>瀹濈墝</label>
+      <label>宝牌</label>
       <div class="number-input">
-        <button type="button" class="num-btn" id="dora-minus">鈭?/button>
+        <button type="button" class="num-btn" id="dora-minus">−</button>
         <span id="dora-val">0</span>
-        <button type="button" class="num-btn" id="dora-plus">锛?/button>
+        <button type="button" class="num-btn" id="dora-plus">＋</button>
       </div>
-      <label style="margin-left:10px">閲屽疂鐗?/label>
+      <label style="margin-left:10px">里宝牌</label>
       <div class="number-input">
-        <button type="button" class="num-btn" id="ura-minus">鈭?/button>
+        <button type="button" class="num-btn" id="ura-minus">−</button>
         <span id="ura-val">0</span>
-        <button type="button" class="num-btn" id="ura-plus">锛?/button>
+        <button type="button" class="num-btn" id="ura-plus">＋</button>
       </div>
     </div>
 
-    <!-- 绗︽暟鍖哄煙 -->
+    <!-- 符数区域 -->
     <div id="fu-section">
       <div class="form-row">
-        <label>绗︽暟</label>
+        <label>符数</label>
         <div class="btn-group">
-          <button type="button" class="sel-btn active" id="fu-mode-manual">鎵嬪姩</button>
-          <button type="button" class="sel-btn" id="fu-mode-calc">璇︾粏绠?/button>
+          <button type="button" class="sel-btn active" id="fu-mode-manual">手动</button>
+          <button type="button" class="sel-btn" id="fu-mode-calc">详细算</button>
         </div>
-        <span id="fu-computed-val" class="fu-computed">30绗?/span>
+        <span id="fu-computed-val" class="fu-computed">30符</span>
       </div>
 
-      <!-- 鎵嬪姩閫夋嫨 -->
+      <!-- 手动选择 -->
       <div id="fu-manual-row" class="form-row" style="padding-left:4px">
         <label style="min-width:0;width:52px"></label>
         <select id="fu-select">
-          <option value="20">20绗?/option>
-          <option value="25">25绗?/option>
-          <option value="30" selected>30绗?/option>
-          <option value="40">40绗?/option>
-          <option value="50">50绗?/option>
-          <option value="60">60绗?/option>
-          <option value="70">70绗?/option>
-          <option value="80">80绗?/option>
-          <option value="90">90绗?/option>
-          <option value="100">100绗?/option>
-          <option value="110">110绗?/option>
+          <option value="20">20符</option>
+          <option value="25">25符</option>
+          <option value="30" selected>30符</option>
+          <option value="40">40符</option>
+          <option value="50">50符</option>
+          <option value="60">60符</option>
+          <option value="70">70符</option>
+          <option value="80">80符</option>
+          <option value="90">90符</option>
+          <option value="100">100符</option>
+          <option value="110">110符</option>
         </select>
       </div>
 
-      <!-- 璇︾粏璁＄畻 -->
+      <!-- 详细计算 -->
       <div id="fu-calc-section" class="hidden">
-        <div class="fu-subsec-title">闈㈠瓙 <span id="fu-meld-count" class="fu-meld-count">0/4缁?/span></div>
-        <div id="fu-meld-grid"><!-- JS鐢熸垚 --></div>
+        <div class="fu-subsec-title">面子 <span id="fu-meld-count" class="fu-meld-count">0/4组</span></div>
+        <div id="fu-meld-grid"><!-- JS生成 --></div>
 
-        <div class="fu-subsec-title">闆€澶?/div>
+        <div class="fu-subsec-title">雀头</div>
         <div class="btn-group" id="fu-pair-group" style="padding-left:0;margin-bottom:10px">
-          <button type="button" class="sel-btn active" data-pair="normal">鏅€?骞轰節 0绗?/button>
-          <button type="button" class="sel-btn" data-pair="honor">褰圭墝(涓夊厓/椋? 2绗?/button>
-          <button type="button" class="sel-btn" data-pair="double">杩為(鍙岄鐗? 4绗?/button>
+          <button type="button" class="sel-btn active" data-pair="normal">普通/幺九 0符</button>
+          <button type="button" class="sel-btn" data-pair="honor">役牌(三元/风) 2符</button>
+          <button type="button" class="sel-btn" data-pair="double">连风(双风牌) 4符</button>
         </div>
 
-        <div class="fu-subsec-title">绛夊緟褰㈠紡</div>
+        <div class="fu-subsec-title">等待形式</div>
         <div class="btn-group" id="fu-wait-group" style="flex-wrap:wrap;margin-bottom:10px">
-          <button type="button" class="sel-btn active" data-wait="lm">涓ら潰 0绗?/button>
-          <button type="button" class="sel-btn" data-wait="qz">宓屽紶 2绗?/button>
-          <button type="button" class="sel-btn" data-wait="bz">杈瑰紶 2绗?/button>
-          <button type="button" class="sel-btn" data-wait="sp">鍙岀 0绗?/button>
-          <button type="button" class="sel-btn" data-wait="dj">鍗曢獞 2绗?/button>
+          <button type="button" class="sel-btn active" data-wait="lm">两面 0符</button>
+          <button type="button" class="sel-btn" data-wait="qz">嵌张 2符</button>
+          <button type="button" class="sel-btn" data-wait="bz">边张 2符</button>
+          <button type="button" class="sel-btn" data-wait="sp">双碰 0符</button>
+          <button type="button" class="sel-btn" data-wait="dj">单骑 2符</button>
         </div>
 
         <div id="fu-calc-result" class="fu-result"></div>
       </div>
     </div>
 
-    <!-- 鏀粯棰勮 -->
+    <!-- 支付预览 -->
     <div id="payment-preview"></div>
 
     <div class="panel-actions">
-      <button type="button" class="cancel-btn" id="win-cancel">鍙栨秷</button>
-      <button type="button" class="confirm-btn" id="win-confirm">纭</button>
+      <button type="button" class="cancel-btn" id="win-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="win-confirm">确认</button>
     </div>
   </div>
 
-  <!-- 绔嬬洿闈㈡澘 -->
+  <!-- 立直面板 -->
   <div id="riichi-panel" class="panel hidden">
-    <div class="panel-title">绔嬬洿</div>
+    <div class="panel-title">立直</div>
     <div class="form-row">
-      <label>绔嬬洿鑰?/label>
+      <label>立直者</label>
       <div class="btn-group" id="riichi-group"></div>
     </div>
     <div class="panel-actions">
-      <button type="button" class="cancel-btn" id="riichi-cancel">鍙栨秷</button>
-      <button type="button" class="confirm-btn" id="riichi-confirm">纭锛堚垝1000锛?/button>
+      <button type="button" class="cancel-btn" id="riichi-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="riichi-confirm">确认（−1000）</button>
     </div>
   </div>
 
-  <!-- 娴佸眬闈㈡澘 -->
+  <!-- 流局面板 -->
   <div id="draw-panel" class="panel hidden">
-    <div class="panel-title">娴佸眬</div>
+    <div class="panel-title">流局</div>
     <div class="form-row" style="flex-direction:column;gap:8px">
-      <label>鍚墝鏂癸紙鍙閫夛級</label>
+      <label>听牌方（可多选）</label>
       <div class="btn-group" id="tenpai-group"></div>
       <div class="btn-group">
-        <button type="button" class="sel-btn" id="draw-all-noten">鍏ㄥ憳鏃犲惉</button>
-        <button type="button" class="sel-btn" id="draw-all-tenpai">鍏ㄥ憳鍚墝</button>
+        <button type="button" class="sel-btn" id="draw-all-noten">全员无听</button>
+        <button type="button" class="sel-btn" id="draw-all-tenpai">全员听牌</button>
       </div>
     </div>
     <div id="draw-preview" class="preview-box"></div>
     <div class="panel-actions">
-      <button type="button" class="cancel-btn" id="draw-cancel">鍙栨秷</button>
-      <button type="button" class="confirm-btn" id="draw-confirm">纭</button>
+      <button type="button" class="cancel-btn" id="draw-cancel">取消</button>
+      <button type="button" class="confirm-btn" id="draw-confirm">确认</button>
     </div>
   </div>
 
-  <!-- 璁剧疆闈㈡澘 -->
+  <!-- 设置面板 -->
   <div id="settings-panel" class="panel hidden">
-    <div class="panel-title">璁剧疆</div>
+    <div class="panel-title">设置</div>
     <div class="form-row">
-      <label>璧峰鐐规暟</label>
+      <label>起始点数</label>
       <select id="start-score-sel">
         <option value="35000" selected>35000</option>
         <option value="30000">30000</option>
@@ -210,15 +211,15 @@
       </select>
     </div>
     <div class="panel-actions">
-      <button type="button" class="cancel-btn" id="settings-cancel">鍏抽棴</button>
-      <button type="button" class="confirm-btn danger-btn" id="btn-reset">閲嶇疆娓告垙</button>
+      <button type="button" class="cancel-btn" id="settings-cancel">关闭</button>
+      <button type="button" class="confirm-btn danger-btn" id="btn-reset">重置游戏</button>
     </div>
   </div>
 
-  <!-- 瀵瑰眬璁板綍 -->
+  <!-- 对局记录 -->
   <section id="game-log">
-    <div class="log-header">瀵瑰眬璁板綍</div>
-    <div id="log-entries"><div class="log-empty">鏆傛棤璁板綍</div></div>
+    <div class="log-header">对局记录</div>
+    <div id="log-entries"><div class="log-empty">暂无记录</div></div>
   </section>
 
 </div>
